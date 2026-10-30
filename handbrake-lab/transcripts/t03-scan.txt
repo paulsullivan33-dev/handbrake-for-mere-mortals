@@ -1,0 +1,54 @@
+$ HandBrakeCLI -i testcard.mkv -t 0        # -t 0 means scan only, encode nothing
+[13:24:36] Compile-time hardening features are enabled
+Cannot load libnvidia-encode.so.1
+[13:24:36] qsv: not available on this system
+[13:24:36] hb_init: starting libhb thread
+HandBrake 1.7.2 (2024040100) - Linux x86_64 - https://handbrake.fr
+2 CPUs detected
+Opening testcard.mkv...
+[13:24:36] hb_scan: path=testcard.mkv, title_index=0
+Input #0, matroska,webm, from 'testcard.mkv':
+  Metadata:
+    title           : Lab Test Card
+    ARTIST          : The HandBrake Lab
+  Duration: 00:00:08.02, start: -0.023000, bitrate: 4796 kb/s
+  Chapters:
+    Chapter #0:0: start 0.000000, end 4.000000
+      Metadata:
+        title           : Opening pattern
+    Chapter #0:1: start 4.000000, end 8.000000
+      Metadata:
+        title           : Second half
+  Stream #0:0: Video: h264 (High), yuv420p, 1280x720, 25 fps
+  Stream #0:1(eng): Audio: aac (LC), 44100 Hz, mono (default)
+      title           : Tone A - 440 Hz mono
+  Stream #0:2(eng): Audio: aac (LC), 44100 Hz, stereo
+      title           : Tone B - 880 Hz stereo
+  Stream #0:3: Subtitle: subrip
+[13:24:36] scan: decoding previews for title 1
+[13:24:36] scan: audio 0x1: aac, rate=44100Hz, bitrate=1 English (AAC LC, 1.0 ch)
+[13:24:36] scan: audio 0x2: aac, rate=44100Hz, bitrate=1 English (AAC LC, 2.0 ch)
+[13:24:36] scan: 10 previews, 1280x720, 25.000 fps, autocrop = 0/0/0/0, aspect 16:9, PAR 1:1, color profile: 1-1-1, chroma location: left
+[13:24:36] libhb: scan thread found 1 valid title(s)
++ title 1:
+  + stream: testcard.mkv
+  + duration: 00:00:08
+  + size: 1280x720, pixel aspect: 1/1, display aspect: 1.78, 25.000 fps
+  + autocrop: 0/0/0/0
+  + chapters:
+    + 1: duration 00:00:04
+    + 2: duration 00:00:04
+  + audio tracks:
+    + 1, English (AAC LC, 1.0 ch) (iso639-2: eng)
+    + 2, English (AAC LC, 2.0 ch) (iso639-2: eng)
+  + subtitle tracks:
+    + 1, Unknown (UTF-8)
+HandBrake has exited.
+
+# Read the summary at the bottom, not the ffmpeg-style dump at
+# the top: HandBrake's own numbering -- title 1, audio 1 and 2,
+# subtitle 1 -- is what every later option refers to. One thing
+# the summary does NOT carry: chapter names. It counts the
+# chapters and times them; the names ("Opening pattern") are in
+# the dump above and in ffprobe, and they do survive encoding
+# (see t04).

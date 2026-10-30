@@ -1,0 +1,38 @@
+$ HandBrakeCLI --version
+HandBrake 1.7.2
+(the full banner for this is at the end of t00)
+
+$ HandBrakeCLI --preset-list        (345 lines; excerpt)
+General/
+    Very Fast 1080p30
+        Small H.264 video (up to 1080p30) and AAC stereo audio, in
+        an MP4 container.
+    Very Fast 720p30
+        Small H.264 video (up to 720p30) and AAC stereo audio, in an
+        MP4 container.
+    ...
+    Fast 480p30
+        H.264 video (up to 480p30) and AAC stereo audio, in an
+        MP4 container.
+    ...
+Web/
+Devices/
+Matroska/
+Hardware/
+Production/
+CLI Defaults/
+# 89 presets in 7 categories, counted from this list.
+
+$ HandBrakeCLI --help        (697 lines; the lines this guide uses)
+Usage: HandBrakeCLI [options] -i <source> -o <destination>
+
+   --version               Print version
+   --preset-import-file <filespec>
+   --preset-export <string>
+   --preset-export-file <filename>
+   -i, --input <string>    Set input file or device ("source")
+   -t, --title <number>    Select a title to encode (0 to scan all titles
+       --scan              Scan selected title only.
+   -o, --output <filename> Set destination file name
+       --subtitle-burned[=number, "native", or "none"]
+       --subtitle-default[=number or "none"]

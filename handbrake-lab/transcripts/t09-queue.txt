@@ -1,0 +1,52 @@
+The queue, CLI style: HandBrakeCLI itself has no job list --
+that lives in the graphical program -- so the honest CLI
+queue is a text file of jobs and a loop. This one failed
+first, and the failure is the lesson.
+
+$ cat queue.txt
+queue-a.mp4 24
+queue-b.mp4 28
+
+$ cat run-queue.sh
+#!/bin/sh
+while read -r out q; do
+  [ -n "$out" ] || continue
+  echo "== $out at RF $q =="
+  HandBrakeCLI -i fixture/testcard.mkv -o "output/$out" \
+    -e x264 --encoder-preset fast -q "$q" -X 854 -Y 480 \
+    2>&1 | grep -E 'Encode done|work result'
+done < queue.txt
+echo "queue finished"
+
+$ ./run-queue.sh
+== queue-a.mp4 at RF 24 ==
+queue finished
+
+$ ls output/queue-*
+(no such files)
+
+# One job header printed, no encodes, no error, and yet the
+# script claims it finished. The cause is a classic: the loop
+# feeds queue.txt to the while loop's standard input, and
+# HandBrakeCLI reads standard input too -- it drank the rest
+# of the job list, so the loop saw end-of-file after one line.
+# The fix is one redirection: give the encoder /dev/null to
+# read instead.
+
+$ ./run-queue.sh        (HandBrakeCLI line now ends with < /dev/null)
+== queue-a.mp4 at RF 24 ==
+[13:27:27] libhb: work result = 0
+Encode done!
+== queue-b.mp4 at RF 28 ==
+[13:27:33] libhb: work result = 0
+Encode done!
+queue finished
+
+$ ls -la output/queue-*
+888240 output/queue-a.mp4
+538321 output/queue-b.mp4
+
+# Both jobs present, in order, each with its own quality
+# setting. Any program that reads stdin will eat a while-read
+# loop's list in exactly this way; HandBrake is just the one
+# that did it here.

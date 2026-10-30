@@ -1,0 +1,34 @@
+One variable at a time: the same source, the same encoder and
+speed, two quality settings -- RF 20 and RF 30. No audio or
+subtitles, so the sizes are the picture alone.
+
+$ HandBrakeCLI -i fixture/testcard.mkv -o output/rf20.mp4 \
+    -e x264 --encoder-preset fast -q 20 --audio none --subtitle none
+[13:26:04] mux: track 0, 200 frames, 3442319 bytes, 3425.19 kbps
+Encode done!
+
+$ HandBrakeCLI -i fixture/testcard.mkv -o output/rf30.mp4 \
+    -e x264 --encoder-preset fast -q 30 --audio none --subtitle none
+[13:26:11] mux: track 0, 200 frames, 989931 bytes, 985.01 kbps
+Encode done!
+
+$ ls -la fixture/testcard.mkv output/rf20.mp4 output/rf30.mp4
+4810247 fixture/testcard.mkv     (whole file; its video is ~4.6 Mb/s)
+3446444 output/rf20.mp4
+ 994008 output/rf30.mp4
+
+# And a meter, so "quality" is a number and not an adjective.
+# SSIM compares each output with the source, frame by frame;
+# 1.0 would be identical.
+$ ffmpeg -i output/rf20.mp4 -i fixture/testcard.mkv -lavfi "[0:v][1:v]ssim" -f null -
+SSIM Y:0.968049 U:0.985695 V:0.991106 All:0.974833
+
+$ ffmpeg -i output/rf30.mp4 -i fixture/testcard.mkv -lavfi "[0:v][1:v]ssim" -f null -
+SSIM Y:0.952560 U:0.978406 V:0.987534 All:0.962697
+
+# The trade, stated flatly: ten RF points divided the file by
+# 3.5 (3,446,444 -> 994,008 bytes) and cost 0.012 of SSIM
+# (0.975 -> 0.963) -- on a test pattern, which is nothing but
+# edges and fine detail, close to a worst case for an encoder.
+# Chapter 8 talks about what that does and does not promise
+# for real footage.

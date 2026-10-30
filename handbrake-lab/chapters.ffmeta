@@ -1,0 +1,13 @@
+;FFMETADATA1
+title=Lab Test Card
+artist=The HandBrake Lab
+[CHAPTER]
+TIMEBASE=1/1000
+START=0
+END=4000
+title=Opening pattern
+[CHAPTER]
+TIMEBASE=1/1000
+START=4000
+END=8000
+title=Second half

@@ -1,0 +1,34 @@
+Two failures, kept word for word. Both end with exit code 2
+and no output file -- check for those two facts before you
+believe any error story, including this one.
+
+$ HandBrakeCLI -i fixture/testcard.mkv -o output/typo.mp4 --preset "Fast 480p300"
+Invalid preset Fast 480p300
+Valid presets are:
+    (followed by all 345 lines of --preset-list)
+HandBrake has exited.
+exit code: 2
+
+$ ls output/
+custom-aac.mkv  custom.mkv  fast480.mp4  rf20.mp4  rf30.mp4
+# (no typo.mp4 -- the failed run wrote nothing)
+
+# And a file that is not a video at all -- the subtitle file,
+# offered as a source:
+$ HandBrakeCLI -i fixture/subs.srt -t 0
+Opening fixture/subs.srt...
+[13:26:40] hb_scan: path=fixture/subs.srt, title_index=0
+udfread ERROR: ECMA 167 Volume Recognition failed
+disc.c:333: failed opening UDF image fixture/subs.srt
+disc.c:437: error opening file BDMV/index.bdmv
+...
+[13:26:40] scan: unrecognized file type
+[13:26:40] libhb: scan thread found 0 valid title(s)
+No title found.
+exit code: 2
+
+# The disc noise in the middle is HandBrake doing its job in
+# the wrong order for your problem: before it decides a file
+# is hopeless it checks whether it might be a DVD or Blu-ray
+# image. The lines that matter are the last three -- type not
+# recognized, zero titles, "No title found."

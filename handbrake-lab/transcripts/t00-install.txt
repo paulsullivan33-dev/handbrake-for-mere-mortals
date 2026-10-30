@@ -1,0 +1,42 @@
+$ curl -s https://api.github.com/repos/HandBrake/HandBrake/releases/latest
+latest release: 1.11.2
+assets include:
+  HandBrake-1.11.2-x86_64.flatpak          (the GUI, as a Flatpak)
+  HandBrake-1.11.2.dmg                     (macOS GUI)
+  HandBrakeCLI-1.11.2-win-x86_64.zip       (the CLI, for Windows)
+  HandBrakeCLI-1.11.2-win-aarch64.zip      (the CLI, for Windows)
+  HandBrakeCLI-1.11.2.dmg                  (the CLI, for macOS)
+  ... plus Windows GUI installers and source. The full list was
+  read; there is NO Linux HandBrakeCLI archive in the release.
+
+# So the lab uses the Ubuntu package instead -- downloaded, not
+# installed (the sandbox's apt state is shared with other work):
+
+$ apt-get -o Dir::State=<lab>/apt-state -o Dir::Cache=<lab>/apt-cache \
+      install --download-only handbrake-cli
+... 256 packages fetched, 191 MB, among them:
+handbrake-cli_1.7.2+ds1-1build2_amd64.deb
+
+$ for d in apt-cache/archives/*.deb; do dpkg -x "$d" extract/; done
+$ ls extract/usr/bin/HandBrakeCLI
+extract/usr/bin/HandBrakeCLI
+
+# A two-line wrapper puts the extracted library tree on the path,
+# so every later command in these transcripts is just HandBrakeCLI:
+$ cat bin/HandBrakeCLI
+#!/bin/sh
+export LD_LIBRARY_PATH=$HOME/workspace/handbrake-labwork/extract/usr/lib/x86_64-linux-gnu
+exec $HOME/workspace/handbrake-labwork/extract/usr/bin/HandBrakeCLI "$@"
+
+$ HandBrakeCLI --version
+[13:24:29] Compile-time hardening features are enabled
+Cannot load libnvidia-encode.so.1
+[13:24:29] qsv: not available on this system
+[13:24:29] hb_init: starting libhb thread
+[13:24:29] thread 73564de3f6c0 started ("libhb")
+HandBrake has exited.
+HandBrake 1.7.2
+
+# Two honest facts arrive before any work is done: this machine
+# has no NVIDIA encoder library and no Intel Quick Sync, and
+# HandBrake says so itself, in its own banner, every run.

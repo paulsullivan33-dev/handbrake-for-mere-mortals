@@ -1,0 +1,29 @@
+site_name: HandBrake for Mere Mortals
+site_description: The video converter that turns files of the wrong shape into files of the right one. Scanning a source, choosing a preset, setting quality with the trade measured in numbers, picking audio and subtitle tracks, and proving every result with a second tool, with the limits stated plainly.
+site_url: https://paulsullivan33-dev.github.io/handbrake-for-mere-mortals/
+copyright: 'Part of <a href="https://paulsullivan33-dev.github.io/mere-mortals/">For Mere Mortals</a> · Text CC BY 4.0, code MIT'
+
+# Guides live at the repo root (nice for GitHub browsing).
+# The deploy workflow copies them into docs/ before building.
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - What HandBrake Is: what-handbrake-is.md
+  - The Moving Parts: the-moving-parts.md
+  - Installing HandBrake: installing-handbrake.md
+  - First Checks: first-checks.md
+  - Scanning a Source: scanning-a-source.md
+  - Your First Transcode: your-first-transcode.md
+  - Presets in Depth: presets-in-depth.md
+  - Quality and Size, Honestly: quality-and-size.md
+  - Audio and Subtitles: audio-and-subtitles.md
+  - Chapters and Metadata: chapters-and-metadata.md
+  - The Queue and Automation: the-queue-and-automation.md
+  - Recipes: recipes.md
+  - The Neighbours: the-neighbours.md
+  - Limits: limits.md
+  - Troubleshooting: troubleshooting.md
+  - Glossary: glossary.md
+  - Writing Criteria: criteria.md

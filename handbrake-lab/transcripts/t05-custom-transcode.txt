@@ -1,0 +1,46 @@
+Choosing tracks by hand: audio track 2 (the stereo tone) and
+subtitle track 1, into a Matroska file this time.
+
+$ HandBrakeCLI -i fixture/testcard.mkv -o output/custom.mkv \
+    -f av_mkv -e x264 --encoder-preset medium -q 20 \
+    --audio 2 --subtitle 1
+[13:25:23] mux: track 0, 200 frames, 3420923 bytes, 3403.90 kbps
+[13:25:23] mux: track 1, 307 frames, 160392 bytes, 159.59 kbps
+[13:25:23] mux: track 2, 2 frames, 114 bytes, 0.11 kbps
+Encode done!
+
+$ ffprobe -hide_banner output/custom.mkv
+  Stream #0:0: Video: h264 (High), yuv420p, 1280x720, 25 fps (default)
+  Stream #0:1(eng): Audio: mp3, 44100 Hz, stereo, fltp, 160 kb/s (default)
+      title           : Stereo
+  Stream #0:2: Subtitle: ass (ssa)
+
+# The track selection worked -- stereo means track 2, the only
+# stereo source -- and the subtitle crossed over (as ASS, the
+# subtitle format Matroska files from HandBrake carry). But
+# look at the audio codec: MP3, which nobody asked for. With
+# no --aencoder named, the choice falls to a default, and the
+# default for Matroska is MP3 while the default for MP4 is
+# AAC. Name the audio encoder yourself:
+
+$ HandBrakeCLI -i fixture/testcard.mkv -o output/custom-aac.mkv \
+    -f av_mkv -e x264 --encoder-preset medium -q 20 \
+    --audio 2 --aencoder av_aac --subtitle 1
+[13:25:44] mux: track 1, 346 frames, 128216 bytes, 127.58 kbps
+[13:25:44] mux: track 2, 2 frames, 114 bytes, 0.11 kbps
+Encode done!
+
+$ ffprobe -hide_banner output/custom-aac.mkv
+  Metadata:
+    title           : Lab Test Card
+  Duration: 00:00:08.03, bitrate: 3539 kb/s
+  Chapters: (both, with names, as in t04)
+  Stream #0:0: Video: h264 (High), yuv420p, 1280x720, 25 fps (default)
+  Stream #0:1(eng): Audio: aac (LC), 44100 Hz, stereo, fltp (default)
+      title           : Stereo
+  Stream #0:2: Subtitle: ass (ssa)
+
+# Same selection, now with the codec that was actually wanted.
+# The audio track's source title ("Tone B - 880 Hz stereo")
+# did not survive either run -- HandBrake names the mixdown
+# ("Stereo") instead. Titles are hints, not promises.

@@ -1,0 +1,7 @@
+1
+00:00:00,500 --> 00:00:03,500
+A test pattern, drawn by a program.
+
+2
+00:00:04,500 --> 00:00:07,500
+No camera was involved in this video.

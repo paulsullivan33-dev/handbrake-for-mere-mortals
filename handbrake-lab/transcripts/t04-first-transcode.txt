@@ -1,0 +1,48 @@
+$ HandBrakeCLI -i fixture/testcard.mkv -o output/fast480.mp4 --preset "Fast 480p30"
+(progress percentages omitted -- about ten seconds on this
+2-CPU machine)
+x264 [info]: kb/s:1186.80
+[13:24:54] mux: track 0, 200 frames, 1186713 bytes, 1180.81 kbps, fifo 256
+[13:24:54] mux: track 1, 346 frames, 114489 bytes, 113.92 kbps, fifo 512
+[13:24:54] Finished work at: Fri Oct 30 13:24:54 2026
+[13:24:54] libhb: work result = 0
+Encode done!
+
+$ ls -la fixture/testcard.mkv output/fast480.mp4
+-rw-rw---- 1 root root 4810247 fixture/testcard.mkv
+-rw-rw---- 1 root root 1310038 output/fast480.mp4
+# Out is 27% of in: 1,310,038 / 4,810,247 bytes.
+
+$ ffprobe -hide_banner output/fast480.mp4
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'output/fast480.mp4':
+  Metadata:
+    major_brand     : mp42
+    title           : Lab Test Card
+    artist          : The HandBrake Lab
+    encoder         : HandBrake 1.7.2 2024040100
+  Duration: 00:00:08.01, start: 0.000000, bitrate: 1308 kb/s
+  Chapters:
+    Chapter #0:0: start 0.000000, end 4.040000
+      Metadata:
+        title           : Opening pattern
+    Chapter #0:1: start 4.040000, end 8.000000
+      Metadata:
+        title           : Second half
+  Stream #0:0: Video: h264 (Main), yuv420p, 720x480 [SAR 32:27 DAR 16:9], 1186 kb/s, 25 fps (default)
+  Stream #0:1(eng): Audio: aac (LC), 44100 Hz, mono, fltp, 114 kb/s (default)
+      handler_name    : Tone A - 440 Hz mono
+  Stream #0:2(eng): Data: bin_data (text), 0 kb/s
+      handler_name    : SubtitleHandler
+
+# Three things to read off this, all of them typical HandBrake:
+# 1. "480p" is stored as 720x480 with a pixel aspect of 32:27 --
+#    the player stretches it to 16:9. Storage size and display
+#    size are different numbers; the preset chose the old DVD
+#    shape for the storage.
+# 2. Only audio track 1 came across (the preset's choice), and
+#    the subtitle is present as an MP4 text track -- ffprobe
+#    calls it "Data: bin_data (text)" and a SubtitleHandler,
+#    which is what embedded subtitles look like in an MP4.
+# 3. The chapters crossed over WITH their names, and so did
+#    the title and artist. Nobody asked for any of that:
+#    carrying them is simply what HandBrake does.

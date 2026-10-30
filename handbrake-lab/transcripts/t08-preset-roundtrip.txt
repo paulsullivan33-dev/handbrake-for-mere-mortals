@@ -1,0 +1,40 @@
+A preset of your own: build the settings once on a real
+encode, export them to a JSON file, then throw the settings
+away and let the file drive a second encode on its own.
+
+$ HandBrakeCLI -i fixture/testcard.mkv -o output/exported.mp4 \
+    -e x264 -q 22 -X 854 -Y 480 \
+    --preset-export "Lab Card 480" --preset-export-file labcard480.json
++ Using preset: Lab Card 480
+Encode done!
+
+$ head -c 400 labcard480.json
+{
+    "PresetList": [
+        {
+            "AlignAVStart": false,
+            "AudioCopyMask": [
+                "copy:aac",
+                "copy:ac3",
+                ...
+            ],
+            "AudioEncoderFallback": "av_aac",
+            ... (one preset is several hundred lines of this)
+
+$ HandBrakeCLI --preset-import-file labcard480.json \
+    -i fixture/testcard.mkv -o output/imported.mp4 --preset "Lab Card 480"
++ Using preset: Lab Card 480
+Encode done!
+
+$ ls -la output/exported.mp4 output/imported.mp4
+1123568 output/exported.mp4
+1123568 output/imported.mp4
+
+$ ffprobe -hide_banner output/imported.mp4
+  Duration: 00:00:08.01, bitrate: 1122 kb/s
+  Stream #0:0: Video: h264 (High), yuv420p, 854x480 [SAR 1280:1281 DAR 16:9], 1001 kb/s, 25 fps
+
+# Same size to the byte, same shape on the probe: the JSON
+# file really is the whole recipe. This is also the format
+# the graphical program exchanges presets in, which is why
+# chapter 11 treats it as the automation door.
